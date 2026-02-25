@@ -1,65 +1,101 @@
-import Image from "next/image";
+"use client";
+import { useState } from "react";
+import Link from "next/link";
+import { FaAngleRight, FaAngleLeft } from "react-icons/fa6";
 
 export default function Home() {
+  const [hovered, setHovered] = useState<"left" | "right" | null>(null);
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <main style={{ position: "fixed", inset: 0, backgroundColor: "#f5f5f5", overflow: "hidden", fontFamily: "sans-serif" }}>
+
+      {/* Navbar */}
+      <nav style={{ position: "absolute", top: 0, left: 0, right: 0, display: "flex", alignItems: "center", justifyContent: "space-between", padding: "20px 24px", zIndex: 10 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+          <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.15em" }}>SKINSTRIC</span>
+          <span style={{ fontSize: 11, letterSpacing: "0.15em", color: "#aaa" }}>[ INTRO ]</span>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+        <button style={{ backgroundColor: "black", color: "white", fontSize: 10, letterSpacing: "0.15em", padding: "8px 16px", border: "none", cursor: "pointer" }}>
+          ENTER CODE
+        </button>
+      </nav>
+
+      {/* Left side lines - hide when hovering right */}
+      {hovered !== "right" && (
+        <>
+          <svg style={{ position: "absolute", top: 0, left: 0, width: "45vw", height: "45vh", pointerEvents: "none" }}>
+            <line x1="0" y1="0" x2="100%" y2="100%" stroke="#ccc" strokeWidth="1" strokeDasharray="4,4" />
+          </svg>
+          <svg style={{ position: "absolute", bottom: 0, left: 0, width: "45vw", height: "45vh", pointerEvents: "none" }}>
+            <line x1="0" y1="100%" x2="100%" y2="0" stroke="#ccc" strokeWidth="1" strokeDasharray="4,4" />
+          </svg>
+        </>
+      )}
+
+      {/* Right side lines - hide when hovering left */}
+      {hovered !== "left" && (
+        <>
+          <svg style={{ position: "absolute", top: 0, right: 0, width: "45vw", height: "45vh", pointerEvents: "none" }}>
+            <line x1="100%" y1="0" x2="0" y2="100%" stroke="#ccc" strokeWidth="1" strokeDasharray="4,4" />
+          </svg>
+          <svg style={{ position: "absolute", bottom: 0, right: 0, width: "45vw", height: "45vh", pointerEvents: "none" }}>
+            <line x1="0" y1="0" x2="100%" y2="100%" stroke="#ccc" strokeWidth="1" strokeDasharray="4,4" />
+          </svg>
+        </>
+      )}
+
+      {/* Hero Text */}
+      <div style={{
+        position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center",
+        transform: hovered === "right" ? "translateX(-180px)" : hovered === "left" ? "translateX(180px)" : "translateX(0)",
+        transition: "transform 0.5s ease"
+      }}>
+        <h1 style={{
+          fontSize: hovered ? "7rem" : "6rem",
+          fontWeight: 100,
+          lineHeight: 1.1,
+          textAlign: "center",
+          letterSpacing: "-0.02em",
+          transition: "font-size 0.5s ease"
+        }}>
+          Sophisticated<br />skincare
+        </h1>
+      </div>
+
+      {/* Bottom left description */}
+      <div style={{ position: "absolute", bottom: 24, left: 24, fontSize: 9, letterSpacing: "0.1em", color: "#999", maxWidth: 200, lineHeight: 2 }}>
+        SKINSTRIC DEVELOPED AN A.I. THAT CREATES A HIGHLY-PERSONALISED ROUTINE TAILORED TO WHAT YOUR SKIN NEEDS.
+      </div>
+
+      {/* Discover A.I. - left - hide when hovering right */}
+      {hovered !== "right" && (
+        <div
+          style={{ position: "absolute", left: 24, top: "50%", transform: "translateY(-50%)", display: "flex", alignItems: "center", gap: 12, cursor: "pointer" }}
+          onMouseEnter={() => setHovered("left")}
+          onMouseLeave={() => setHovered(null)}
+        >
+          <div style={{ width: 28, height: 28, border: "1px solid black", transform: "rotate(45deg)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <FaAngleLeft style={{ transform: "rotate(-45deg)", fontSize: 12 }} />
+          </div>
+          <span style={{ fontSize: 10, letterSpacing: "0.15em" }}>DISCOVER A.I.</span>
         </div>
-      </main>
-    </div>
+      )}
+
+      {/* Take Test - right - hide when hovering left */}
+      {hovered !== "left" && (
+        <Link
+          href="/introduction"
+          style={{ position: "absolute", right: 24, top: "50%", transform: "translateY(-50%)", display: "flex", alignItems: "center", gap: 12, cursor: "pointer", textDecoration: "none", color: "black" }}
+          onMouseEnter={() => setHovered("right")}
+          onMouseLeave={() => setHovered(null)}
+        >
+          <span style={{ fontSize: 10, letterSpacing: "0.15em" }}>TAKE TEST</span>
+          <div style={{ width: 28, height: 28, border: "1px solid black", transform: "rotate(45deg)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <FaAngleRight style={{ transform: "rotate(-45deg)", fontSize: 12 }} />
+          </div>
+        </Link>
+      )}
+
+    </main>
   );
 }
