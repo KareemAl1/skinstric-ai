@@ -7,91 +7,138 @@ export default function Home() {
   const [hovered, setHovered] = useState<"left" | "right" | null>(null);
 
   return (
-    <main style={{ position: "fixed", inset: 0, backgroundColor: "#f5f5f5", overflow: "hidden", fontFamily: "sans-serif" }}>
+    <main className="fixed inset-0 overflow-hidden" style={{ backgroundColor: "#FCFCFC" }}>
+
+      <style>{`
+        @keyframes fadeIn {
+          from { opacity: 0; transform: translateY(12px); }
+          to   { opacity: 1; transform: translateY(0); }
+        }
+        .fade-in {
+          animation: fadeIn 0.9s ease forwards;
+        }
+        .fade-in-slow {
+          animation: fadeIn 1.2s ease forwards;
+          animation-delay: 0.2s;
+          opacity: 0;
+        }
+        .fade-in-slower {
+          animation: fadeIn 1.4s ease forwards;
+          animation-delay: 0.4s;
+          opacity: 0;
+        }
+        .hero-wrapper {
+          transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .hero-wrapper.hover-right {
+          transform: translateX(-20vw);
+        }
+        .hero-wrapper.hover-left {
+          transform: translateX(20vw);
+        }
+        .hero-wrapper.idle {
+          transform: translateX(0);
+        }
+      `}</style>
 
       {/* Navbar */}
-      <nav style={{ position: "absolute", top: 0, left: 0, right: 0, display: "flex", alignItems: "center", justifyContent: "space-between", padding: "20px 24px", zIndex: 10 }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-          <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.15em" }}>SKINSTRIC</span>
-          <span style={{ fontSize: 11, letterSpacing: "0.15em", color: "#aaa" }}>[ INTRO ]</span>
+      <nav className="fade-in absolute top-0 left-0 right-0 flex items-center justify-between px-8 py-5 z-10">
+        <div className="flex items-center gap-3">
+          <span style={{ fontWeight: 600, fontSize: 14, letterSpacing: "-0.02em" }} className="uppercase">SKINSTRIC</span>
+          <span style={{ fontSize: 14, letterSpacing: "-0.02em", opacity: 0.6 }} className="uppercase">[ INTRO ]</span>
         </div>
-        <button style={{ backgroundColor: "black", color: "white", fontSize: 10, letterSpacing: "0.15em", padding: "8px 16px", border: "none", cursor: "pointer" }}>
+        <button style={{ backgroundColor: "#1A1B1C", color: "#FCFCFC", fontSize: 10, letterSpacing: "-0.02em", padding: "8px 16px", border: "none", cursor: "pointer" }} className="uppercase">
           ENTER CODE
         </button>
       </nav>
 
-      {/* Left side lines - hide when hovering right */}
+      {/* Left diamond */}
       {hovered !== "right" && (
-        <>
-          <svg style={{ position: "absolute", top: 0, left: 0, width: "45vw", height: "45vh", pointerEvents: "none" }}>
-            <line x1="0" y1="0" x2="100%" y2="100%" stroke="#ccc" strokeWidth="1" strokeDasharray="4,4" />
-          </svg>
-          <svg style={{ position: "absolute", bottom: 0, left: 0, width: "45vw", height: "45vh", pointerEvents: "none" }}>
-            <line x1="0" y1="100%" x2="100%" y2="0" stroke="#ccc" strokeWidth="1" strokeDasharray="4,4" />
-          </svg>
-        </>
+        <div
+          className="fade-in fixed top-1/2 pointer-events-none"
+          style={{
+            left: "-53vw",
+            width: 500,
+            height: 500,
+            border: "1.5px dashed #A0A4AB",
+            transform: "translateY(-50%) rotate(45deg)",
+          }}
+        />
       )}
 
-      {/* Right side lines - hide when hovering left */}
+      {/* Right diamond */}
       {hovered !== "left" && (
-        <>
-          <svg style={{ position: "absolute", top: 0, right: 0, width: "45vw", height: "45vh", pointerEvents: "none" }}>
-            <line x1="100%" y1="0" x2="0" y2="100%" stroke="#ccc" strokeWidth="1" strokeDasharray="4,4" />
-          </svg>
-          <svg style={{ position: "absolute", bottom: 0, right: 0, width: "45vw", height: "45vh", pointerEvents: "none" }}>
-            <line x1="0" y1="0" x2="100%" y2="100%" stroke="#ccc" strokeWidth="1" strokeDasharray="4,4" />
-          </svg>
-        </>
+        <div
+          className="fade-in fixed top-1/2 pointer-events-none"
+          style={{
+            right: "-53vw",
+            width: 500,
+            height: 500,
+            border: "1.5px dashed #A0A4AB",
+            transform: "translateY(-50%) rotate(45deg)",
+          }}
+        />
       )}
 
-      {/* Hero Text */}
-      <div style={{
-        position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center",
-        transform: hovered === "right" ? "translateX(-180px)" : hovered === "left" ? "translateX(180px)" : "translateX(0)",
-        transition: "transform 0.5s ease"
-      }}>
-        <h1 style={{
-          fontSize: hovered ? "7rem" : "6rem",
-          fontWeight: 100,
-          lineHeight: 1.1,
-          textAlign: "center",
-          letterSpacing: "-0.02em",
-          transition: "font-size 0.5s ease"
-        }}>
-          Sophisticated<br />skincare
-        </h1>
+      {/* Hero Text — exact reference values */}
+      <div className="fade-in-slow absolute inset-0 flex items-center justify-center">
+        <div
+          className={`hero-wrapper ${
+            hovered === "right" ? "hover-right" :
+            hovered === "left"  ? "hover-left"  :
+            "idle"
+          }`}
+        >
+          <h1
+            style={{
+              fontSize: 100,
+              fontWeight: 400,
+              letterSpacing: "-0.05em",
+              color: "#1A1B1C",
+              textAlign: "center",
+              lineHeight: 1,
+              whiteSpace: "nowrap",
+            }}
+          >
+            Sophisticated<br />skincare
+          </h1>
+        </div>
       </div>
 
       {/* Bottom left description */}
-      <div style={{ position: "absolute", bottom: 24, left: 24, fontSize: 9, letterSpacing: "0.1em", color: "#999", maxWidth: 200, lineHeight: 2 }}>
+      <div className="fade-in-slower absolute uppercase" style={{ bottom: 32, left: 32, fontSize: 11, lineHeight: "20px", color: "#1A1B1C", maxWidth: 200 }}>
         SKINSTRIC DEVELOPED AN A.I. THAT CREATES A HIGHLY-PERSONALISED ROUTINE TAILORED TO WHAT YOUR SKIN NEEDS.
       </div>
 
-      {/* Discover A.I. - left - hide when hovering right */}
+      {/* Discover A.I. */}
       {hovered !== "right" && (
         <div
-          style={{ position: "absolute", left: 24, top: "50%", transform: "translateY(-50%)", display: "flex", alignItems: "center", gap: 12, cursor: "pointer" }}
+          className="fade-in-slow absolute flex items-center gap-4 cursor-pointer"
+          style={{ left: 32, top: "50%", transform: "translateY(-50%)", color: "#1A1B1C" }}
           onMouseEnter={() => setHovered("left")}
           onMouseLeave={() => setHovered(null)}
         >
-          <div style={{ width: 28, height: 28, border: "1px solid black", transform: "rotate(45deg)", display: "flex", alignItems: "center", justifyContent: "center" }}>
-            <FaAngleLeft style={{ transform: "rotate(-45deg)", fontSize: 12 }} />
+          <div className="rotate-45 flex items-center justify-center"
+            style={{ width: 44, height: 44, border: "1px solid #1A1B1C" }}>
+            <FaAngleLeft className="-rotate-45" style={{ fontSize: 14 }} />
           </div>
-          <span style={{ fontSize: 10, letterSpacing: "0.15em" }}>DISCOVER A.I.</span>
+          <span style={{ fontSize: 14, fontWeight: 600, letterSpacing: "-0.02em", opacity: 0.7 }} className="uppercase">DISCOVER A.I.</span>
         </div>
       )}
 
-      {/* Take Test - right - hide when hovering left */}
+      {/* Take Test */}
       {hovered !== "left" && (
         <Link
           href="/introduction"
-          style={{ position: "absolute", right: 24, top: "50%", transform: "translateY(-50%)", display: "flex", alignItems: "center", gap: 12, cursor: "pointer", textDecoration: "none", color: "black" }}
+          className="fade-in-slow absolute flex items-center gap-4 no-underline"
+          style={{ right: 32, top: "50%", transform: "translateY(-50%)", color: "#1A1B1C" }}
           onMouseEnter={() => setHovered("right")}
           onMouseLeave={() => setHovered(null)}
         >
-          <span style={{ fontSize: 10, letterSpacing: "0.15em" }}>TAKE TEST</span>
-          <div style={{ width: 28, height: 28, border: "1px solid black", transform: "rotate(45deg)", display: "flex", alignItems: "center", justifyContent: "center" }}>
-            <FaAngleRight style={{ transform: "rotate(-45deg)", fontSize: 12 }} />
+          <span style={{ fontSize: 14, fontWeight: 600, letterSpacing: "-0.02em", opacity: 0.7 }} className="uppercase">TAKE TEST</span>
+          <div className="rotate-45 flex items-center justify-center"
+            style={{ width: 44, height: 44, border: "1px solid #1A1B1C" }}>
+            <FaAngleRight className="-rotate-45" style={{ fontSize: 14 }} />
           </div>
         </Link>
       )}
