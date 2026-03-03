@@ -1,19 +1,32 @@
 "use client";
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { FaAngleLeft, FaAngleRight } from "react-icons/fa6";
+import { FaAngleLeft } from "react-icons/fa6";
 
 export default function Testing() {
   const [ready, setReady] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     const timer = setTimeout(() => setReady(true), 3000);
     return () => clearTimeout(timer);
   }, []);
 
+  const handleCameraClick = () => {
+    router.push("/camera-permission");
+  };
+
+  const handleGalleryClick = () => {
+    const input = document.createElement("input");
+    input.type = "file";
+    input.accept = "image/*";
+    input.onchange = () => router.push("/analysis-loading");
+    input.click();
+  };
+
   return (
     <main className="fixed inset-0 overflow-hidden" style={{ backgroundColor: "#FCFCFC" }}>
-
       <style>{`
         @keyframes spin { from { transform: translate(-50%,-50%) rotate(45deg); } to { transform: translate(-50%,-50%) rotate(405deg); } }
         @keyframes spinReverse { from { transform: translate(-50%,-50%) rotate(45deg); } to { transform: translate(-50%,-50%) rotate(-315deg); } }
@@ -30,7 +43,9 @@ export default function Testing() {
           <span style={{ fontWeight: 600, fontSize: 14, letterSpacing: "-0.02em" }} className="uppercase">SKINSTRIC</span>
           <span style={{ fontSize: 14, letterSpacing: "-0.02em", opacity: 0.6 }} className="uppercase">[ INTRO ]</span>
         </div>
-        <p style={{ fontWeight: 600, fontSize: 16, letterSpacing: "-0.02em" }} className="uppercase mt-2">TO START ANALYSIS</p>
+        <p style={{ fontWeight: 600, fontSize: 16, letterSpacing: "-0.02em", color: "#1A1B1C" }} className="uppercase mt-2">
+          TO START ANALYSIS
+        </p>
       </nav>
 
       {!ready ? (
@@ -53,13 +68,13 @@ export default function Testing() {
         /* SELECTION */
         <div className="fade-in absolute inset-0">
 
-          {/* LEFT — Camera (Skinstric logo) */}
-          <div className="absolute cursor-pointer" style={{ left: "25%", top: "48%", transform: "translate(-50%,-50%)" }}>
+          {/* LEFT — Camera */}
+          <div className="absolute cursor-pointer" style={{ left: "25%", top: "48%", transform: "translate(-50%,-50%)" }}
+            onClick={handleCameraClick}>
             <div className="relative" style={{ width: 300, height: 300 }}>
               <div className="d1" style={{ width: 284, height: 284, border: "2px dashed #A0A4AB", opacity: 0.3 }} />
               <div className="d2" style={{ width: 262, height: 262, border: "2px dashed #A0A4AB", opacity: 0.6 }} />
               <div className="d3" style={{ width: 238, height: 238, border: "2px dashed #A0A4AB" }} />
-
               <div className="absolute top-1/2 left-1/2" style={{ transform: "translate(-50%,-50%)" }}>
                 <svg width="120" height="120" viewBox="127 127 230 230" fill="none">
                   <circle cx="242" cy="242" r="115.571" stroke="#1A1B1C" strokeWidth="2"/>
@@ -72,8 +87,6 @@ export default function Testing() {
                   <path d="M275.902 210.697C283.5 218.922 288.143 229.919 288.143 242C288.143 246.923 287.372 251.666 285.944 256.115H270.596C260.624 256.115 252.465 255.965 252.465 255.78C252.465 255.4 272.437 217.016 275.902 210.697Z" fill="#FCFCFC"/>
                 </svg>
               </div>
-
-              {/* Callout */}
               <div className="absolute" style={{ top: "22%", left: "58%" }}>
                 <svg width="90" height="45" viewBox="0 0 90 45" fill="none">
                   <line x1="0" y1="45" x2="90" y2="0" stroke="#1A1B1C" strokeWidth="0.75"/>
@@ -86,13 +99,13 @@ export default function Testing() {
             </div>
           </div>
 
-          {/* RIGHT — Gallery (profile icon) */}
-          <div className="absolute cursor-pointer" style={{ left: "75%", top: "48%", transform: "translate(-50%,-50%)" }}>
+          {/* RIGHT — Gallery */}
+          <div className="absolute cursor-pointer" style={{ left: "75%", top: "48%", transform: "translate(-50%,-50%)" }}
+            onClick={handleGalleryClick}>
             <div className="relative" style={{ width: 300, height: 300 }}>
               <div className="d1" style={{ width: 284, height: 284, border: "2px dashed #A0A4AB", opacity: 0.3 }} />
               <div className="d2" style={{ width: 262, height: 262, border: "2px dashed #A0A4AB", opacity: 0.6 }} />
               <div className="d3" style={{ width: 238, height: 238, border: "2px dashed #A0A4AB" }} />
-
               <div className="absolute top-1/2 left-1/2" style={{ transform: "translate(-50%,-50%)" }}>
                 <svg width="120" height="120" viewBox="132 127 230 230" fill="none">
                   <circle cx="247" cy="242" r="115.571" stroke="#1A1B1C" strokeWidth="2"/>
@@ -101,8 +114,6 @@ export default function Testing() {
                   <path fillRule="evenodd" clipRule="evenodd" d="M196 242C196 245.96 196.451 249.815 197.306 253.516C202.527 276.136 222.794 293 247 293C273.867 293 295.882 272.224 297.856 245.862C297.951 244.587 298 243.299 298 242C298 213.833 275.167 191 247 191C218.833 191 196 213.833 196 242ZM214.336 241.726L198.382 252.771C197.618 249.302 197.214 245.698 197.214 242C197.214 214.504 219.504 192.214 247 192.214C274.496 192.214 296.786 214.504 296.786 242C296.786 243.541 296.716 245.066 296.579 246.572L261.945 265.813C259.432 267.208 256.334 266.997 254.035 265.272L222.855 241.887C220.346 240.006 216.915 239.941 214.336 241.726Z" fill="#1A1B1C"/>
                 </svg>
               </div>
-
-              {/* Callout */}
               <div className="absolute" style={{ bottom: "22%", right: "58%" }}>
                 <p style={{ position: "absolute", bottom: 47, right: 94, fontSize: 10, letterSpacing: "0.04em", whiteSpace: "nowrap", lineHeight: 1.6, textAlign: "right" }} className="uppercase">
                   Allow A.I.<br/>access gallery
@@ -126,17 +137,6 @@ export default function Testing() {
         </div>
         <span style={{ fontSize: 14, fontWeight: 600, letterSpacing: "-0.02em", opacity: 0.7 }} className="uppercase">BACK</span>
       </Link>
-
-      {/* Proceed */}
-      {!ready && (
-        <button onClick={() => setReady(true)} className="absolute flex items-center gap-4 cursor-pointer z-10"
-          style={{ right: 32, bottom: 80, color: "#1A1B1C", background: "none", border: "none" }}>
-          <span style={{ fontSize: 14, fontWeight: 600, letterSpacing: "-0.02em", opacity: 0.7 }} className="uppercase">PROCEED</span>
-          <div className="rotate-45 flex items-center justify-center" style={{ width: 44, height: 44, border: "1px solid #1A1B1C" }}>
-            <FaAngleRight className="-rotate-45" style={{ fontSize: 14 }} />
-          </div>
-        </button>
-      )}
 
     </main>
   );
