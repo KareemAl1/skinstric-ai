@@ -17,13 +17,33 @@ export default function Testing() {
     router.push("/camera-permission");
   };
 
-  const handleGalleryClick = () => {
-    const input = document.createElement("input");
-    input.type = "file";
-    input.accept = "image/*";
-    input.onchange = () => router.push("/analysis-loading");
-    input.click();
+const handleGalleryClick = () => {
+  const input = document.createElement("input");
+  input.type = "file";
+  input.accept = "image/*";
+  input.onchange = async (e) => {
+    const file = (e.target as HTMLInputElement).files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = async () => {
+      const base64 = (reader.result as string).split(",")[1];
+      try {
+        const res = await fetch("https://us-central1-frontend-simplified.cloudfunctions.net/skinstricPhaseTwo", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ image: base64 }),
+        });
+        const data = await res.json();
+        localStorage.setItem("analysisData", JSON.stringify(data.data));
+      } catch (err) {
+        console.error(err);
+      }
+      router.push("/analysis-loading");
+    };
+    reader.readAsDataURL(file);
   };
+  input.click();
+};
 
   return (
     <main className="fixed inset-0 overflow-hidden" style={{ backgroundColor: "#FCFCFC" }}>

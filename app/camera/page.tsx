@@ -6,7 +6,9 @@ import { FaAngleLeft, FaAngleRight } from "react-icons/fa6";
 
 export default function Camera() {
   const videoRef = useRef<HTMLVideoElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
   const [shotTaken, setShotTaken] = useState(false);
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -21,22 +23,52 @@ export default function Camera() {
     };
   }, []);
 
-  const handleTakePicture = () => setShotTaken(true);
+  const handleTakePicture = () => {
+    if (!videoRef.current || !canvasRef.current) return;
+    const canvas = canvasRef.current;
+    const video = videoRef.current;
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    canvas.getContext("2d")?.drawImage(video, 0, 0);
+    setShotTaken(true);
+  };
+
+  const handleProceed = async () => {
+    if (!canvasRef.current) return;
+    setLoading(true);
+    const base64 = canvasRef.current.toDataURL("image/jpeg").split(",")[1];
+    try {
+      const res = await fetch("https://us-central1-frontend-simplified.cloudfunctions.net/skinstricPhaseTwo", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ image: base64 }),
+      });
+      const data = await res.json();
+      localStorage.setItem("analysisData", JSON.stringify(data.data));
+    } catch (err) {
+      console.error(err);
+    }
+    router.push("/analysis-loading");
+  };
 
   return (
     <main className="fixed inset-0 overflow-hidden" style={{ backgroundColor: "#D8D5D0" }}>
 
-      {/* Full screen camera feed */}
       <video
         ref={videoRef}
         autoPlay
         playsInline
         muted
         className="absolute inset-0 w-full h-full object-cover"
-        style={{ transform: "scaleX(-1)" }}
+        style={{ transform: "scaleX(-1)", display: shotTaken ? "none" : "block" }}
       />
 
-      {/* GREAT SHOT overlay */}
+      <canvas
+        ref={canvasRef}
+        className="absolute inset-0 w-full h-full object-cover"
+        style={{ transform: "scaleX(-1)", display: shotTaken ? "block" : "none" }}
+      />
+
       {shotTaken && (
         <div className="absolute inset-0 flex items-start justify-center z-10" style={{ paddingTop: "28%" }}>
           <p style={{ fontSize: 11, fontWeight: 600, letterSpacing: "0.12em", color: "white" }} className="uppercase">
@@ -45,7 +77,6 @@ export default function Camera() {
         </div>
       )}
 
-      {/* Take picture button — right side */}
       {!shotTaken && (
         <div className="absolute right-12 top-1/2 z-10 flex flex-col items-center gap-3"
           style={{ transform: "translateY(-50%)" }}>
@@ -70,7 +101,6 @@ export default function Camera() {
         </div>
       )}
 
-      {/* Tips bottom center */}
       <div className="absolute bottom-12 left-1/2 text-center z-10" style={{ transform: "translateX(-50%)" }}>
         <p style={{ fontSize: 10, letterSpacing: "0.08em", color: "white", opacity: 0.8, marginBottom: 8 }} className="uppercase">
           To get better results make sure to have
@@ -87,8 +117,7 @@ export default function Camera() {
         </div>
       </div>
 
-      {/* Back */}
-      <Link href="/camera-permission" className="absolute flex items-center gap-4 no-underline z-10"
+      <Link href="/camera-setup" className="absolute flex items-center gap-4 no-underline z-10"
         style={{ left: 32, bottom: 80, color: "white" }}>
         <div className="rotate-45 flex items-center justify-center" style={{ width: 44, height: 44, border: "1px solid white" }}>
           <FaAngleLeft className="-rotate-45" style={{ fontSize: 14 }} />
@@ -96,12 +125,15 @@ export default function Camera() {
         <span style={{ fontSize: 14, fontWeight: 600, letterSpacing: "-0.02em", opacity: 0.7 }} className="uppercase">BACK</span>
       </Link>
 
-      {/* Proceed — only after shot taken */}
       {shotTaken && (
-        <button onClick={() => router.push("/analysis-loading")}
+        <button
+          onClick={handleProceed}
+          disabled={loading}
           className="absolute flex items-center gap-4 cursor-pointer z-10"
           style={{ right: 32, bottom: 80, color: "white", background: "none", border: "none" }}>
-          <span style={{ fontSize: 14, fontWeight: 600, letterSpacing: "-0.02em", opacity: 0.7 }} className="uppercase">PROCEED</span>
+          <span style={{ fontSize: 14, fontWeight: 600, letterSpacing: "-0.02em", opacity: 0.7 }} className="uppercase">
+            {loading ? "Processing..." : "Proceed"}
+          </span>
           <div className="rotate-45 flex items-center justify-center" style={{ width: 44, height: 44, border: "1px solid white" }}>
             <FaAngleRight className="-rotate-45" style={{ fontSize: 14 }} />
           </div>
